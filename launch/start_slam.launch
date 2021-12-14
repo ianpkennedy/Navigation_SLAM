@@ -1,0 +1,49 @@
+<launch>
+<!-- Sources: 12/07
+https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/
+https://answers.ros.org/question/329022/error-during-launching-turtlebot3_worldlaunch/ 
+Professor Elwin's modified Turtlebot package (cloned 12/07):
+git clone https://github.com/m-elwin/turtlebot3 -b slam_toolbox 
+-->
+
+    <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type[burger]" />
+    <arg name="multi_robot_name" default=""/>
+    <arg name="mode" default="sim"/>
+    <arg name="move_forward_only" default="false"/>
+
+
+    <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+      <arg name="model" value="$(arg model)" />
+      <arg name="multi_robot_name" value="$(arg multi_robot_name)"/>
+    </include>  
+
+    <group if="$(eval mode == 'sim')">
+        <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_house.launch"/>
+        <arg name="map_file" default="$(find hw4)/map_gazebo.yaml"/>
+        <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/> 
+        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hw4)/rviz/slam.rviz"/>
+    </group>
+    
+    <include file= "$(find turtlebot3_teleop)/launch/turtlebot3_teleop_key.launch"/>
+
+    <include file= "$(find slam_toolbox)/online_async.launch"/>
+    
+
+    <group if="$(eval mode == 'real')">
+        <arg name="map_file" default="$(find hw4)/map_real.yaml"/>
+        <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hw4)/rviz/real.rviz"/>
+    </group>
+
+    <include file="$(find turtlebot3_navigation)/launch/move_base.launch">
+        <arg name="model" value="$(arg model)" />
+        <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+    </include>
+
+    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+       <param name="use_gui" value="true"/>
+       <param name="rate" value="50"/>
+    </node>
+
+
+</launch>

@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+
+import rospy
+import random
+from math import pi
+
+from geometry_msgs.msg import PoseStamped
+from nav_msgs.msg import Odometry
+
+
+
+"""
+This node implements a random exploration algorithm with the help of the move_base of the turtlebot
+
+Publishers:
+    /move_base_simple/goal of type PoseStamped publishes the goal for the robot to go to
+
+Subscribers:
+    /odom of type Odometry to get the current robot pose
+
+"""
+
+
+#Counter to change targets to avoid getting permanently stuck. This variable resets every 
+tmr = 500
+
+
+
+
+def choose_goal(x,y):
+    """
+    This function takes the current odom data from the turtlebot, and returns a randomized x,y (within  a +/- 1 range) and a
+    random theta
+    Args:
+        x: odom x position data
+        y: odom y position data
+
+    Returns:
+        x_new: randomized x goal within +/- 1 of of x odom position
+        y_new: randomized y goal within +/- 1 of y odom position
+        theta_new: randomized new orientation goal for robot
+    
+    """
+    
+    x_new = random.uniform(x-1,x+1)
+    y_new = random.uniform(y-1, y+1)
+    theta_new = random.uniform(-pi,pi)
+    
+    return (x_new, y_new, theta_new)
+
+
+class Explore:
+
+    def __init__(self):
+        
+        #Initialize publishers and subscribers
+        self.explorepub = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
+        self.odomsub = rospy.Subscriber('odom', Odometry, self.odomsub_callback)
+
+        #Initialize goal variables
+        self.goal_x = 0.0
+        self.goal_y = 0.0
+        self.goal_theta = 0.0
+
+
+    def odomsub_callback(self,data):
+        """
+        This callback gets the odom data from the turtlebot3, and uses it to publish a move_base goal that is close to the position of the robot as defined by odometry.
+        This avoids any unattainable goals based off the cost map. 
+        Args:
+            data of type odometry contains the position and speed of the robot (linear and angular)
+            
+        """
+        #This tmr variable delays the update of the move_base_simple/goal topic
+        global tmr
+
+        if tmr == 500:
+            
+            (self.goal_x, self.goal_y, self.goal_theta) = choose_goal(data.pose.pose.position.x, data.pose.pose.position.y)
+            tmr = 0        
+
+        #Create the goal data variable
+        #Sources:
+        # 12/09: https://www.programcreek.com/python/example/113987/move_base_msgs.msg.MoveBaseGoal
+        # 12/08: https://answers.ros.org/question/47973/publishing-to-move_base_simplegoal/
+
+        goal = PoseStamped()
+
+        goal.header.stamp = rospy.Time.now()
+        goal.header.frame_id = "map"
+
+        goal.pose.position.x = self.goal_x
+        goal.pose.position.y = self.goal_y
+        goal.pose.position.z = 0.0
+
+        goal.pose.orientation.x = 0
+        goal.pose.orientation.y = 0
+        goal.pose.orientation.z = self.goal_theta
+        goal.pose.orientation.w = 1
+
+
+        #Publish the goal
+        self.explorepub.publish(goal)        
+
+        #Increment timer variable
+        tmr+=1  
+
+
+
+def main():
+    """
+    Main function
+    """
+    rospy.init_node('explore')
+    explore = Explore()
+    rospy.spin()
+
+if __name__ == '__main__':
+    main()
