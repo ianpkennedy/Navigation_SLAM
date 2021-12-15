@@ -23,7 +23,13 @@ In this part, entering in a terminal `roslaunch hw4 nav_stack.launch` was used t
 Results:
 Simulation: https://drive.google.com/file/d/1g5BZvHMnuymElRFyGapUSAPuXvw1y4cE/view?usp=sharing
 
+![alt-text](https://github.com/ianpkennedy/ROS_Navigation_SLAM/blob/main/nav_sim.gif)
+
+
 Real: https://drive.google.com/file/d/1urOuR6geeY-Itanl7tOsTKWV-YjQS3ij/view?usp=sharing (RVIZ)
+
+![alt-text](https://github.com/ianpkennedy/ROS_Navigation_SLAM/blob/main/nav_real.gif)
+
 https://drive.google.com/file/d/1ZXKYW0PL2H5es6cp6yrlXBTyPfPYDVLc/view?usp=sharing (Real video)
 
 ## Part 2.1
@@ -35,9 +41,17 @@ In this part, the command `roslaunch hw4 slam_stack.launch` is used to navigate 
 Results:
 Simulation: https://drive.google.com/file/d/1-m79E1WmiWIipGCVSHYIwngtlsCo2SyB/view?usp=sharing
 
+![alt-text](https://github.com/ianpkennedy/ROS_Navigation_SLAM/blob/main/slam_sim.gif)
+
+
 Real: https://drive.google.com/file/d/1uiVP0FNjU4mJHzQpoRA1lkKLdas_IOCD/view?usp=sharing (Real - I used my leg to block the turtlebot laser scanner from sensing the atrium column for the purposes of the task)
 
+
+
 https://drive.google.com/file/d/1n02IEqK_Om48Xw8vnznP0R6p7vwcxAx-/view?usp=sharing (RVIZ)
+
+![alt-text](https://github.com/ianpkennedy/ROS_Navigation_SLAM/blob/main/slam_real.gif)
+
 
 ## Part 2.2
 
@@ -56,8 +70,14 @@ To run this, run this command in a terminal : `roslaunch hw4 explore.launch` . s
 Results:
 Simultation: https://drive.google.com/file/d/1P_dztl_wqotQzEjrthXyyS6zd65DoEDS/view?usp=sharing 
 
+![alt-text](https://github.com/ianpkennedy/ROS_Navigation_SLAM/blob/main/explore_sim.gif)
+
+
 Real: https://drive.google.com/file/d/1NnAmZZfnDMy0l2BsQP3srI0xzOFGCGuW/view?usp=sharing (Real)
 https://drive.google.com/file/d/1rdfmnL2QKYL2eftitGWiRUwzxyPN8sj2/view?usp=sharing (RVIZ)
+
+
+![alt-text](https://github.com/ianpkennedy/ROS_Navigation_SLAM/blob/main/explore_real.gif)
 
 ## Sources:
 
